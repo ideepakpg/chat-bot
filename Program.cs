@@ -5,7 +5,9 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
+
 var botClient = new TelegramBotClient("Token");
+
 
 using CancellationTokenSource cts = new();
 
@@ -34,15 +36,15 @@ cts.Cancel();
 
 async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
 {
-    //// Only process Message updates
-    //if (update.Message is not { } message)
-    //    return;
-    //// Only process text messages
-    //if (message.Text is not { } messageText)
-    //    return;
+    // Only process Message updates
+    if (update.Message is not { } message)
+        return;
+    // Only process text messages
+    if (message.Text is not { } messageText)
+        return;
 
-    Message message = await botClient.SendTextMessageAsync(
-    chatId: 1232323487,
+    Message newMessage = await botClient.SendTextMessageAsync(
+    chatId: chatId,
     text: "*Hello 👋  I'm Levi, humanity's strongest soldier*",
     parseMode: ParseMode.MarkdownV2,
     disableNotification: true,
@@ -52,6 +54,13 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
             text: "My Owner",
             url: "https://t.me/ideepakpg")),
     cancellationToken: cancellationToken);
+
+
+    Console.WriteLine(
+    $"{newMessage.From.FirstName} sent message {newMessage.MessageId} " +
+    $"to chat {newMessage.Chat.Id} at {newMessage.Date}. " +
+    $"It is a reply to message {newMessage.ReplyToMessage.MessageId} " +
+    $"and has {newMessage.Entities.Length} message entities.");
 
 
     //var chatId = message.Chat.Id;
