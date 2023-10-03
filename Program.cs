@@ -37,6 +37,7 @@ cts.Cancel();
 
 async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
 {
+
     // Only process Message updates
     if (update.Message is not { } message)
         return;
@@ -88,6 +89,32 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
             url: "https://t.me/ideepakpg")),
     cancellationToken: cancellationToken);
 
+
+
+
+    // This code creates a custom keyboard with options, sends a text message with the keyboard to user, allowing user interaction.
+    ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
+    {
+    new KeyboardButton[] { "Repo", "About me" },
+    new KeyboardButton[] { "Call me ☎️", "Share" },
+})
+    {
+        ResizeKeyboard = true
+    };
+
+    Message sentMessage = await botClient.SendTextMessageAsync(
+        chatId: ChatId,
+        text: "Choose a response",
+        replyMarkup: replyKeyboardMarkup,
+        cancellationToken: cancellationToken);
+
+
+    // To remove the KeyboardButton from the bot
+    //Message sentMessage1 = await botClient.SendTextMessageAsync(
+    //    chatId: chatId,
+    //    text: "Removing keyboard",
+    //    replyMarkup: new ReplyKeyboardRemove(),
+    //    cancellationToken: cancellationToken);
 
 
     // Display information about the sent message, including sender's name, message ID, local timestamp, reply status, and message entities count.
