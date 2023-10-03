@@ -45,6 +45,37 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
     if (message.Text is not { } messageText)
         return;
 
+
+
+    switch (messageText.ToLower())
+    {
+        case "/start":
+            // Reply with a welcome message for the "/start" command
+            var startMessage = "Yes I'm alive bitch !";
+            await botClient.SendTextMessageAsync(message.Chat.Id, startMessage, cancellationToken: cancellationToken);
+            break;
+
+        case "/help":
+            var helpMessage = "പോയിട്ട് അടുത്ത വെള്ളിയാഴ്ച്ച വാ";
+            await botClient.SendTextMessageAsync(message.Chat.Id, helpMessage, cancellationToken: cancellationToken);
+            break;
+
+        case "/about":
+            var aboutMessage = "C# Telegram Chat Bot built using .NET Client Telegram Bot API Framework";
+            await botClient.SendTextMessageAsync(message.Chat.Id, aboutMessage, cancellationToken: cancellationToken);
+            break;
+
+        case "/contact":
+            var contactMessage = "why are you gay ?";
+            await botClient.SendTextMessageAsync(message.Chat.Id, contactMessage, cancellationToken: cancellationToken);
+            break;
+
+        default:
+            // Handle unknown commands or other text messages here
+            break;
+    }
+
+
     //Send an introduction message with an InlineKeyboardMarkup
     Message newMessage = await botClient.SendTextMessageAsync(
     chatId: ChatId,
@@ -57,6 +88,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
             text: "My Owner",
             url: "https://t.me/ideepakpg")),
     cancellationToken: cancellationToken);
+
 
 
 
@@ -83,6 +115,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
     //    text: "Removing keyboard",
     //    replyMarkup: new ReplyKeyboardRemove(),
     //    cancellationToken: cancellationToken);
+
 
     // Display information about the sent message, including sender's name, message ID, local timestamp, reply status, and message entities count.
     Console.WriteLine(
