@@ -96,7 +96,9 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
     ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
     {
     new KeyboardButton[] { "Repo", "About me" },
-    new KeyboardButton[] { "Call me ☎️", "Share" },
+
+    // for second row of keyboard button
+    //new KeyboardButton[] { "Call me ☎️", "Share" },
 })
     {
         ResizeKeyboard = true
