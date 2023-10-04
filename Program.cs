@@ -46,7 +46,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
         return;
 
 
-
+    //This code manages various Telegram bot commands, offering responses for commands such as "/start", "/help", "/about", and "/contact"
     switch (messageText.ToLower())
     {
         case "/start":
@@ -78,7 +78,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
 
     //Send an introduction message with an InlineKeyboardMarkup
     Message newMessage = await botClient.SendTextMessageAsync(
-    chatId: ChatId,
+    chatId: chatId,
     text: "*Hello 👋  I'm Levi Ackerman, humanity's strongest soldier*",
     parseMode: ParseMode.MarkdownV2,
     disableNotification: true,
@@ -102,11 +102,12 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
         ResizeKeyboard = true
     };
 
-    Message sentMessage = await botClient.SendTextMessageAsync(
-        chatId: ChatId,
-        text: "Choose a response",
-        replyMarkup: replyKeyboardMarkup,
-        cancellationToken: cancellationToken);
+    // Turned off "Choose a response" text message to choose from the replyKeyboardMarkup button
+    //Message sentMessage = await botClient.SendTextMessageAsync(
+    //    chatId: chatId,
+    //    text: "Choose a response",
+    //    replyMarkup: replyKeyboardMarkup,
+    //    cancellationToken: cancellationToken);
 
 
     // To remove the KeyboardButton from the bot
@@ -117,7 +118,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
     //    cancellationToken: cancellationToken);
 
 
-    // Display information about the sent message, including sender's name, message ID, local timestamp, reply status, and message entities count.
+    // Display information about the sent message, including sender's name, message ID, local timestamp, reply status, and message entities count in console.
     Console.WriteLine(
     $"{newMessage.From.FirstName} sent message {newMessage.MessageId} " +
     $"to chat {newMessage.Chat.Id} at {newMessage.Date.ToLocalTime()}. " +
