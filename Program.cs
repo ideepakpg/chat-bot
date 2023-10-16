@@ -35,6 +35,9 @@ Console.ReadLine();
 // Send cancellation request to stop bot
 cts.Cancel();
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
 {
 
@@ -46,6 +49,21 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
         return;
 
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    //Display user entered commands details in console
+    if (messageText.StartsWith("/"))
+    {
+        // Get the current date and time (to show in console)
+        DateTime currentTime = DateTime.Now;
+
+        // Display the user's chat ID, date, and time in console
+        Console.WriteLine(
+            $"User with Chat ID {message.Chat.Id} sent the command '{messageText}' at {currentTime.ToLocalTime()}.");
+    }
+
+
     //This code manages various Telegram bot commands, offering responses for commands such as "/start", "/help", "/about", and "/contact"
     switch (messageText.ToLower())
     {
@@ -53,22 +71,22 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
             // Reply with a welcome message for the "/start" command
             var startMessage = "Yes I'm alive bitch !";
             await botClient.SendTextMessageAsync(message.Chat.Id, startMessage, cancellationToken: cancellationToken);
-            break;
+            return;
 
         case "/help":
             var helpMessage = "പോയിട്ട് അടുത്ത വെള്ളിയാഴ്ച്ച വാ";
             await botClient.SendTextMessageAsync(message.Chat.Id, helpMessage, cancellationToken: cancellationToken);
-            break;
+            return;
 
         case "/about":
             var aboutMessage = "C# Telegram Chat Bot built using .NET Client Telegram Bot API Framework";
             await botClient.SendTextMessageAsync(message.Chat.Id, aboutMessage, cancellationToken: cancellationToken);
-            break;
+            return;
 
         case "/contact":
             var contactMessage = "why are you gay ?";
             await botClient.SendTextMessageAsync(message.Chat.Id, contactMessage, cancellationToken: cancellationToken);
-            break;
+            return;
 
         default:
             // Handle unknown commands or other text messages here
@@ -76,35 +94,62 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
     }
 
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    long chatId = update.Message.Chat.Id; // Get the chat ID from the incoming message (dynamic chatId)
+
     //Send an introduction message with an InlineKeyboardMarkup
+    var inlineKeyboard = new InlineKeyboardMarkup(new List<List<InlineKeyboardButton>>
+{
+    // First row
+    new List<InlineKeyboardButton>
+    {
+        InlineKeyboardButton.WithUrl("My Owner", "https://t.me/ideepakpg"),
+        InlineKeyboardButton.WithUrl("Repo", "https://github.com/ideepakpg/chat-bot")
+    },
+    // Second row
+    //new List<InlineKeyboardButton>
+    //{
+    //    InlineKeyboardButton.WithCallbackData("Button 1", "data1"),
+    //    InlineKeyboardButton.WithUrl("Open Website", "https://example.com")
+    //},
+    // Add more rows with buttons as needed
+});
+
     Message newMessage = await botClient.SendTextMessageAsync(
-    chatId: chatId,
-    text: "*Hello 👋  I'm Levi Ackerman, humanity's strongest soldier*",
-    parseMode: ParseMode.MarkdownV2,
-    disableNotification: true,
-    replyToMessageId: update.Message.MessageId,
-    replyMarkup: new InlineKeyboardMarkup(
-        InlineKeyboardButton.WithUrl(
-            text: "My Owner",
-            url: "https://t.me/ideepakpg")),
-    cancellationToken: cancellationToken);
+        chatId: chatId,/*(dynamic chatId)*/
+        text: "*Hello 👋  I'm Levi Ackerman, humanity's strongest soldier*",
+        parseMode: ParseMode.MarkdownV2,
+        disableNotification: true,
+        replyToMessageId: update.Message.MessageId,
+        replyMarkup: inlineKeyboard,
+        cancellationToken: cancellationToken);
+
+    // Display information about the sent(normal text message(newMessage only) not commands) message, including sender's name, message ID, local timestamp, reply status, and message entities count in console.
+    Console.WriteLine(
+    $"{newMessage.From.FirstName} sent message {newMessage.MessageId} " +
+    $"to chat {newMessage.Chat.Id} at {newMessage.Date.ToLocalTime()}. " +
+    $"It is a reply to message {newMessage.ReplyToMessage.MessageId} " +
+    $"and has {newMessage.Entities.Length} message entities.");
 
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     // This code creates a custom keyboard with options, sends a text message with the keyboard to user, allowing user interaction.
-    ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
-    {
-    new KeyboardButton[] { "Repo", "About me" },
+    //    ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]
+    //    {
+    //    new KeyboardButton[] { "Repo", "About me" },
 
-    // for second row of keyboard button
-    //new KeyboardButton[] { "Call me ☎️", "Share" },
-})
-    {
-        ResizeKeyboard = true
-    };
+    //    // for second row of keyboard button
+    //    //new KeyboardButton[] { "Call me ☎️", "Share" },
+    //})
+    //    {
+    //        ResizeKeyboard = true
+    //    };
 
-    // Turned off "Choose a response" text message to choose from the replyKeyboardMarkup button
+    // Turned off "Choose a response" text message to choose from the replyKeyboardMarkup button (need to turn on ,otherwise the KeyboardButton don't display)
     //Message sentMessage = await botClient.SendTextMessageAsync(
     //    chatId: chatId,
     //    text: "Choose a response",
@@ -120,13 +165,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
     //    cancellationToken: cancellationToken);
 
 
-    // Display information about the sent message, including sender's name, message ID, local timestamp, reply status, and message entities count in console.
-    Console.WriteLine(
-    $"{newMessage.From.FirstName} sent message {newMessage.MessageId} " +
-    $"to chat {newMessage.Chat.Id} at {newMessage.Date.ToLocalTime()}. " +
-    $"It is a reply to message {newMessage.ReplyToMessage.MessageId} " +
-    $"and has {newMessage.Entities.Length} message entities.");
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     //var chatId = message.Chat.Id;
@@ -140,6 +179,13 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
     //    cancellationToken: cancellationToken);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//Handles errors that occur during the polling process of the Telegram bot.
+//Logs error messages to the console, providing detailed information about the exception.
 Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
 {
     var ErrorMessage = exception switch
